@@ -29,6 +29,7 @@ app.use('/', router);
  */
 const cron = require('./cron')
 cron.OneTimeScheduler();
+cron.WeeklyReportScheduler();
 /**
  * Spinning up server
  */

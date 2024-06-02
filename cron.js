@@ -76,4 +76,22 @@ async function OneTimeScheduler(){
     });
   });
  }
-  module.exports = {OneTimeScheduler,RecurringScheduler}
+
+//weekly report
+const reportQueue = require('./queue');
+
+async function scheduleReports() {
+  console.log("yes");
+  const users = await users.findAll();
+  console.log("users: ", users);
+  users.forEach(user => {
+    reportQueue.add('generateReport', { userId: user.id });
+  });
+}
+
+// Schedule to run every week
+async function WeeklyReportScheduler(){
+  cron.schedule('* * * * *', scheduleReports)
+};
+
+  module.exports = {OneTimeScheduler,RecurringScheduler, WeeklyReportScheduler}
