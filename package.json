@@ -29,5 +29,13 @@
   },
   "devDependencies": {
     "sequelize-cli": "^6.6.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hadiya-pathan-2024/Medication-Reminder-.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hadiya-pathan-2024/Medication-Reminder-/issues"
+  },
+  "homepage": "https://github.com/hadiya-pathan-2024/Medication-Reminder-#readme"
 }

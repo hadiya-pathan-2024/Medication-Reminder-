@@ -1,13 +1,13 @@
 const cron = require('node-cron');
-const db = require('./models/index');
+const db = require('../models/index');
 const { Op } = require('sequelize');
-const { sendNotification } = require('./controllers/notification.controller');
+const { sendNotification } = require('../controllers/notification.controller');
 const { users,medications, one_time_schedule, recurring_schedules, notifications_log } = db;
 const dotEnv = require("dotenv");
 dotEnv.config({ path: `.env` });
 //one-time
 async function OneTimeScheduler(){
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('*/10 * * * * *', async () => {
     const now = new Date();
     // console.log("date: ", now.toISOString());
     // console.log("time: ", now.toTimeString().split(' ')[0]);
@@ -45,32 +45,43 @@ async function OneTimeScheduler(){
 }
 //recurring
  async function RecurringScheduler(){
-  cron.schedule('0 0 * * *', async () => {
+  cron.schedule('0 * * * *', async () => {
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-  
+    const todayDate = now.toISOString().split('T')[0];
+    console.log("today: ", todayDate);
     const recurringSchedules = await recurring_schedules.findAll({
+      attributes: ['frequency','start_date','end_date','day_of_week'],
       where: {
         start_date: {
-          [Op.lte]: today,
+          [Op.lte]: todayDate,
         },
         end_date: {
-          [Op.gte]: today,
+          [Op.gte]: todayDate,
         },
       },
-      include: [medications],
+      include: [
+        {
+          model: medications,
+          attributes: ['id','medicine_name','description'],
+          include: [
+            {
+              model: users,
+              attributes: ['email']
+            }
+          ]
+        }
+      ],
     });
-  
     recurringSchedules.forEach(schedule => {
       const shouldNotify = schedule.frequency === 'Daily' ||
-        (schedule.frequency === 'Weekly' && schedule.dayOfWeek === now.toLocaleString('en-us', { day_of_week: 'long' }));
+        (schedule.frequency === 'Weekly' && schedule.day_of_week === now.toLocaleString('en-IN'));
   
       if (shouldNotify) {
-        sendNotification(schedule.medications);
+        sendNotification(schedule.medication);
         notifications_log.create({
-          medication_id: schedule.medications.id,
+          medication_id: schedule.medication.id,
           notification_date: now,
-          details: `Recurring medication reminder for ${schedule.medications.medicine_name}`,
+          details: `Recurring medication reminder for ${schedule.medication.medicine_name}`,
         });
       }
     });
@@ -78,13 +89,12 @@ async function OneTimeScheduler(){
  }
 
 //weekly report
-const reportQueue = require('./queue');
+const reportQueue = require('../services/queue');
 
 async function scheduleReports() {
-  console.log("yes");
-  const users = await users.findAll();
-  console.log("users: ", users);
-  users.forEach(user => {
+  const Allusers = await users.findAll();
+  console.log("users: ", Allusers);
+  Allusers.forEach(user => {
     reportQueue.add('generateReport', { userId: user.id });
   });
 }
@@ -94,4 +104,4 @@ async function WeeklyReportScheduler(){
   cron.schedule('* * * * *', scheduleReports)
 };
 
-  module.exports = {OneTimeScheduler,RecurringScheduler, WeeklyReportScheduler}
+module.exports = {OneTimeScheduler,RecurringScheduler, WeeklyReportScheduler}

@@ -55,6 +55,7 @@ async function register(req, res) {
                 expiresIn: "2h"
             }
         )
+        res.redirect("/login")
     } catch (error) {
         console.log("Error", error);
     }
@@ -96,12 +97,13 @@ async function login(req, res) {
                 expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
                 httpOnly: true
             }
-            res.status(200).cookie("token", token, options).json({
-                success: true,
-                token
-            })
+            // res.status(200).cookie("token", token, options).json({
+            //     success: true,
+            //     token
+            // })
+            res.redirect("/home")
         }
-
+        
     } catch (error) {
         console.log("Error", error);
     }

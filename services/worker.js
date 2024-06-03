@@ -1,10 +1,11 @@
 const { Worker } = require('bullmq');
 const Redis = require('ioredis');
-const { generateAndSendReport } = require('./controllers/report.generation.controller');
+const { generateAndSendReport } = require('../controllers/report.generation.controller');
 
 const connection = new Redis();
 
 const reportWorker = new Worker('reportQueue', async job => {
+  console.log("At job");
   await generateAndSendReport(job.data.userId);
 }, { 
     connection: {

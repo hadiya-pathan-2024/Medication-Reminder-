@@ -27,9 +27,12 @@ app.use('/', router);
 /**
  * Cron job functions
  */
-const cron = require('./cron')
+const cron = require('./helpers/cron')
 cron.OneTimeScheduler();
 cron.WeeklyReportScheduler();
+require("./services/worker")
+cron.RecurringScheduler();
+
 /**
  * Spinning up server
  */

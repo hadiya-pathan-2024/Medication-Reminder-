@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   recurring_schedules.init({
     medication_id: DataTypes.INTEGER,
     frequency: DataTypes.STRING,
-    start_date: DataTypes.DATE,
-    end_date: DataTypes.DATE,
+    start_date: DataTypes.DATEONLY,
+    end_date: DataTypes.DATEONLY,
     time: DataTypes.TIME,
     day_of_week: DataTypes.STRING,
     marked_as_done: DataTypes.BOOLEAN

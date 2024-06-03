@@ -2,42 +2,49 @@ const db = require('../models/index');
 const { users, medications } = db;
 const nodemailer = require('nodemailer');
 const { createObjectCsvWriter } = require('csv-writer');
-const fs = require('fs');
 const path = require('path');
 const dotEnv = require("dotenv");
+const { Op } = require('sequelize');
 dotEnv.config({ path: `.env` });
 
 async function generateAndSendReport(userId) {
-    const user = await users.findByPk(userId);
+    console.log("Generate page");
+    const user = await users.findOne({
+        attributes: ['email'],
+        where: {
+            id: userId
+        }
+    });
     if (!user) throw new Error('User not found');
 
     const logs = await medications.findAll({
+        attributes: ['user_id', 'medicine_name'],
         where: {
-            userId,
-            date: { [sequelize.Op.gte]: new Date(new Date().setDate(new Date().getDate() - 7)) }
+            user_id: userId,
+            // date: { [Op.gte]: new Date(new Date().setDate(new Date().getDate() - 7)) }
         }
     });
 
     const csvWriter = createObjectCsvWriter({
-        path: path.resolve(__dirname, `reports/${userId}.csv`),
+        // path: path.resolve(__dirname + `reports/${userId}.csv`),
+        path: ('/home/hadiya-pathan/Downloads/1.csv'),
         header: [
             { id: 'medicineName', title: 'Medicine Name' },
-            { id: 'markAsDone', title: 'Mark as Done' },
-            { id: 'time', title: 'Time' },
-            { id: 'date', title: 'Date' },
+            // { id: 'markAsDone', title: 'Mark as Done' },
+            // { id: 'time', title: 'Time' },
+            // { id: 'date', title: 'Date' },
         ]
     });
-
     const records = logs.map(log => ({
-        medicine_name: log.medicine_name,
-        // markAsDone: log.markAsDone,
+        medicineName: log.medicine_name,
+        // markAsDone: log.marked_as_done,
         // time: log.time,
         // date: log.date
     }));
-
+    // console.log("csv: ", records);
     await csvWriter.writeRecords(records);
 
-    await sendEmail(user.email, path.resolve(__dirname, `reports/${userId}.csv`));
+    await sendEmail(user.email, '/home/hadiya-pathan/Downloads/1.csv');
 }
 
 async function sendEmail(to, attachmentPath) {
