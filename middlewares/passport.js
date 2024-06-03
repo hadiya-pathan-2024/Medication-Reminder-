@@ -26,5 +26,23 @@ module.exports = (passport) => {
     } catch (error) {
       return done(error, false);
     }
+
+    /////////////////
+    // try {
+    //   const session = await Session.findOne({ where: { sessionId: jwtPayload.sessionId } });
+    //   if (!session) {
+    //     return done(null, false);
+    //   }
+      
+    //   const user = await User.findByPk(jwtPayload.id);
+    //   if (user) {
+    //     return done(null, user);
+    //   } else {
+    //     return done(null, false);
+    //   }
+    // } catch (err) {
+    //   return done(err, false);
+    // }
+    ////////////////////////
   }));
 };
