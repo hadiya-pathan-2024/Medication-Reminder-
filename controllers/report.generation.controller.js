@@ -1,5 +1,5 @@
 const db = require('../models/index');
-const { users, medications } = db;
+const { users, medications, one_time_schedule } = db;
 const nodemailer = require('nodemailer');
 const { createObjectCsvWriter } = require('csv-writer');
 const path = require('path');
@@ -8,7 +8,6 @@ const { Op } = require('sequelize');
 dotEnv.config({ path: `.env` });
 
 async function generateAndSendReport(userId) {
-    console.log("Generate page");
     const user = await users.findOne({
         attributes: ['email'],
         where: {
@@ -22,29 +21,38 @@ async function generateAndSendReport(userId) {
         where: {
             user_id: userId,
             // date: { [Op.gte]: new Date(new Date().setDate(new Date().getDate() - 7)) }
-        }
+        },
+        include: [
+            {
+                model: one_time_schedule,
+                attributes: ['date', 'time','marked_as_done'],
+            }
+        ]
     });
-
+    // console.log("Logs: ", logs[0].one_time_schedules[0].time);
+    // console.log("Logs: ", logs);
     const csvWriter = createObjectCsvWriter({
         // path: path.resolve(__dirname + `reports/${userId}.csv`),
         path: ('/home/hadiya-pathan/Downloads/1.csv'),
         header: [
             { id: 'medicineName', title: 'Medicine Name' },
-            // { id: 'markAsDone', title: 'Mark as Done' },
-            // { id: 'time', title: 'Time' },
-            // { id: 'date', title: 'Date' },
+            { id: 'markAsDone', title: 'Mark as Done' },
+            { id: 'time', title: 'Time' },
+            { id: 'date', title: 'Date' },
         ]
     });
-    const records = logs.map(log => ({
+    const records = logs.map(log => {
+    return {
         medicineName: log.medicine_name,
-        // markAsDone: log.marked_as_done,
-        // time: log.time,
-        // date: log.date
-    }));
+        markAsDone: log.one_time_schedules[0]?.marked_as_done ?? "",
+        time: log.one_time_schedules[0]?.time,
+        date: log.one_time_schedules[0]?.date
+    }
+});
     // console.log("csv: ", records);
     await csvWriter.writeRecords(records);
 
-    await sendEmail(user.email, '/home/hadiya-pathan/Downloads/1.csv');
+    // await sendEmail(user.email, '/home/hadiya-pathan/Downloads/1.csv');
 }
 
 async function sendEmail(to, attachmentPath) {

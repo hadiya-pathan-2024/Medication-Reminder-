@@ -28,10 +28,10 @@ app.use('/', router);
  * Cron job functions
  */
 const cron = require('./helpers/cron')
-cron.OneTimeScheduler();
+// cron.OneTimeScheduler();
 cron.WeeklyReportScheduler();
 require("./services/worker")
-cron.RecurringScheduler();
+// cron.RecurringScheduler();
 
 /**
  * Spinning up server

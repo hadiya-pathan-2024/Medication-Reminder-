@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       medications.belongsTo(models.users, {foreignKey: "user_id"})
-      medications.hasMany(models.one_time_schedule)
+      medications.hasMany(models.one_time_schedule, {foreignKey: "medication_id"})
       medications.hasMany(models.recurring_schedules)
       medications.hasMany(models.notifications_log)
     }

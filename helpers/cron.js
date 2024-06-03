@@ -92,7 +92,11 @@ async function OneTimeScheduler(){
 const reportQueue = require('../services/queue');
 
 async function scheduleReports() {
-  const Allusers = await users.findAll();
+  const Allusers = await users.findAll({
+    where: {
+      id:1
+    }
+  });
   console.log("users: ", Allusers);
   Allusers.forEach(user => {
     reportQueue.add('generateReport', { userId: user.id });
@@ -101,7 +105,7 @@ async function scheduleReports() {
 
 // Schedule to run every week
 async function WeeklyReportScheduler(){
-  cron.schedule('* * * * *', scheduleReports)
+  cron.schedule('*/10 * * * * *', scheduleReports)
 };
 
 module.exports = {OneTimeScheduler,RecurringScheduler, WeeklyReportScheduler}
