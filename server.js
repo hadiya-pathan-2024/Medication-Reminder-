@@ -4,6 +4,7 @@ const router = require('./routes/index.routes');
 const path = require("path");
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
+// const session = require("express-session");
 // Load environment variables from .env file
 config({ path: `.env` });
 require("./middlewares/passport")(passport)
@@ -19,6 +20,11 @@ app.engine('ejs', require('ejs').__express);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(passport.initialize())
+// app.use(session({
+//     secret: "jwtSecret",
+//     saveUninitialized: true,
+//     resave: true
+// }));
 /**
  * Routes Configuration
  */
@@ -29,8 +35,8 @@ app.use('/', router);
  */
 const cron = require('./helpers/cron')
 // cron.OneTimeScheduler();
-cron.WeeklyReportScheduler();
-require("./services/worker")
+// cron.WeeklyReportScheduler();
+// require("./services/worker")
 // cron.RecurringScheduler();
 
 /**

@@ -1,7 +1,14 @@
 const db = require('../models/index');
-const { users,medications, one_time_schedule,recurring_schedules  } = db;
+const { sessions,users,medications, one_time_schedule,recurring_schedules  } = db;
 
 async function home(req, res) {
+  const sessionData = await sessions.findOne({
+    attributes: ['token_id'],
+    where: {
+      token_id: req.token
+    }
+  })
+  // console.log(sessionData)
     res.render("pages/home")
 }
 

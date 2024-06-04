@@ -1,20 +1,20 @@
 const db = require('../models/index');
-const { users } = db;
+const { users, sessions } = db;
 const dotEnv = require("dotenv");
 dotEnv.config({ path: `.env` });
 const { generalResponse } = require('../helpers/response.helper');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const { where } = require('sequelize');
+const { createSession, deleteSessions, generateToken } = require('../controllers/session.controller')
 
-async function registerPage(req,res){
+async function registerPage(req, res) {
     res.render("pages/register")
 }
 
 async function register(req, res) {
     try {
-        const { id,first_name, last_name, email, password, dob } = req.body;
+        const { id, first_name, last_name, email, password, dob } = req.body;
         console.log(req.body);
         if (!(first_name && last_name && email && password)) {
             return generalResponse(
@@ -25,11 +25,11 @@ async function register(req, res) {
                 true
             )
         }
-        const existingUser = await users.findOne({ 
+        const existingUser = await users.findOne({
             where: {
-                email:email
+                email: email
             }
-         })
+        })
         if (existingUser) {
             return generalResponse(
                 res,
@@ -49,7 +49,7 @@ async function register(req, res) {
         })
         console.log("user: ", saveUser);
         const token = jwt.sign(
-            { id:saveUser.id },
+            { id: saveUser.id },
             process.env.JWT_SECRET,
             {
                 expiresIn: "2h"
@@ -61,14 +61,14 @@ async function register(req, res) {
     }
 }
 
-async function loginPage(req,res){
-   res.render("pages/login")
+async function loginPage(req, res) {
+    res.render("pages/login")
 }
 
 async function login(req, res) {
     try {
         const { email, password } = req.body;
-        console.log("login: ", req.body);
+        // req.session.email = email;
         if (!(email && password)) {
             return generalResponse(
                 res,
@@ -78,35 +78,54 @@ async function login(req, res) {
                 true
             )
         }
-        const findUser = await users.findOne({ 
+        const findUser = await users.findOne({
             where: {
                 email
             }
-         })
-        if (findUser && (bcrypt.compare(password, findUser.password)))
-         {
-            const token = jwt.sign(
-                { id: findUser.id },
-                process.env.JWT_SECRET,
-                {
-                    expiresIn: "2h"
-                }
-            )
+        })
+        if (findUser && (bcrypt.compare(password, findUser.password))) {
+            console.log("user_session: ", req.session);
+            // console.log("session: ", session);
+            const token_id = generateToken(findUser);
+            const session = await createSession(token_id,findUser.id, 'windows');
+            res.status(200).cookie("token_id", token_id).json({
+                    success: true,
+                    token_id
+                })
+            // const token = jwt.sign(
+            //     { id: findUser.id },
+            //     process.env.JWT_SECRET,
+            //     {
+            //         expiresIn: "2h"
+            //     }
+            // )
             //cookie
-            const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-                httpOnly: true
-            }
+            // const options = {
+            //     expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+            //     httpOnly: true
+            // }
             // res.status(200).cookie("token", token, options).json({
             //     success: true,
             //     token
             // })
-            res.redirect("/home")
+            // res.redirect("/home")
         }
-        
+
     } catch (error) {
         console.log("Error", error);
     }
 }
 
-module.exports = { register, login, registerPage, loginPage }
+const logoutOthers = async (req, res) => {
+    // res.clearCookie('token_id');
+    await deleteSessions(req.user.id, req.token);
+    res.send("Logged Out from other devices")
+};
+
+const logoutAll = async (req, res) => {
+    res.clearCookie('token_id');
+    await deleteSessions(req.user.id);
+    res.redirect("/login")
+};
+
+module.exports = { register, login, registerPage, loginPage, logoutOthers, logoutAll }

@@ -2,47 +2,42 @@
 // // let JwtExtract = require("passport-jwt").ExtractJwt;
 const dotEnv = require("dotenv");
 dotEnv.config({ path: `.env` });
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+const JwtStrategy = require('passport-jwt').Strategy;
 const db = require('../models/index');
-const {users} = db;
+const { users, sessions } = db;
 const jwtSecret = process.env.JWT_SECRET;
 
-let cookieExtractor = function(req){
-  return req.cookies?.token;
+let cookieExtractor = function (req) {
+  return req.cookies?.token_id;
 }
 const opts = {
   jwtFromRequest: cookieExtractor,
-  secretOrKey: jwtSecret
+  secretOrKey: jwtSecret,
+  passReqToCallback: true
 };
-module.exports = (passport) => {
-  passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
-    try {
-      console.log("jwt: ", jwt_payload);
-      const user = await users.findByPk(jwt_payload.id);
-      if (user) {
-        return done(null, user.dataValues);
-      }
-      return done(null, false);
-    } catch (error) {
-      return done(error, false);
-    }
 
-    /////////////////
-    // try {
-    //   const session = await Session.findOne({ where: { sessionId: jwtPayload.sessionId } });
-    //   if (!session) {
-    //     return done(null, false);
-    //   }
-      
-    //   const user = await User.findByPk(jwtPayload.id);
-    //   if (user) {
-    //     return done(null, user);
-    //   } else {
-    //     return done(null, false);
-    //   }
-    // } catch (err) {
-    //   return done(err, false);
-    // }
-    ////////////////////////
-  }));
+module.exports = (passport) => {
+  try {
+    passport.use(new JwtStrategy(opts, async (req, jwt_payload, next) => {
+      try {
+        const token = cookieExtractor(req);
+        req.token = token
+        let session = await sessions.findOne({ 
+          attributes: ['token_id'],
+          where: { token_id:token } });
+          if (!session) {
+            return next(null, false);
+          }
+        const user = await users.findByPk(jwt_payload.id);
+        if (user) {
+          return next(null, user);
+        }
+        return next(null, false);
+      } catch (error) {
+        return next(error, false);
+      }
+    }));
+  } catch (error) {
+    console.log(error)
+  }
 };

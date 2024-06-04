@@ -22,37 +22,34 @@ document.getElementById('frequency').addEventListener('change', function () {
 });
 
 
-/////////////////////////////////////
-// Example with Fetch API
+// const logoutAllDevices = async () => {
+//   const response = await fetch('/logout-all', {
+//     method: 'POST',
+//     headers: {
+//       'Authorization': `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   });
 
-const logoutAllDevices = async () => {
-  const response = await fetch('/logout-all', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  });
+//   if (response.ok) {
+//     alert('Logged out from all devices');
+//   } else {
+//     alert('Failed to log out from all devices');
+//   }
+// };
 
-  if (response.ok) {
-    alert('Logged out from all devices');
-  } else {
-    alert('Failed to log out from all devices');
-  }
-};
+// const logoutOtherDevices = async () => {
+//   const response = await fetch('/logout-others', {
+//     method: 'POST',
+//     headers: {
+//       'Authorization': `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   });
 
-const logoutOtherDevices = async () => {
-  const response = await fetch('/logout-others', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (response.ok) {
-    alert('Logged out from other devices');
-  } else {
-    alert('Failed to log out from other devices');
-  }
-};
+//   if (response.ok) {
+//     alert('Logged out from other devices');
+//   } else {
+//     alert('Failed to log out from other devices');
+//   }
+// };

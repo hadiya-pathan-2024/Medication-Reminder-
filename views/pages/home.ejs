@@ -9,6 +9,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+  <%- include('../partials/navbar.ejs') %>
   <div class="container">
   <h1>Add Medication</h1>
   <form action="/medications" method="POST">
@@ -74,20 +75,3 @@
   <script src="/js/home.js"></script>
 </body>
 </html>
-
-///////////////////////////////
-<!-- <html>
-<head>
-  <title>Dashboard</title>
-</head>
-<body>
-  <h1>Welcome, <%= user.username %></h1>
-  <form action="/logout" method="post">
-    <input type="hidden" name="allDevices" value="true">
-    <button type="submit">Log me out from all devices</button>
-  </form>
-  <form action="/logout-other-devices" method="post">
-    <button type="submit">Log me out from other devices</button>
-  </form>
-</body>
-</html> -->
