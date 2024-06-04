@@ -7,7 +7,6 @@ async function home(req, res) {
 
 async function fileUpload(req,res){
   console.log("file",req.file)
-  res.send("done")
 }
 
 async function newMedication(req, res){

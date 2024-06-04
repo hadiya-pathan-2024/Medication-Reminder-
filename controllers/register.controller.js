@@ -6,7 +6,7 @@ const { generalResponse } = require('../helpers/response.helper');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const { createSession, deleteSessions, generateToken } = require('../repositeries/session.repositery')
+const { createSession, deleteSessions, generateToken, deleteSessionsOne } = require('../repositeries/session.repositery')
 
 async function registerPage(req, res) {
     res.render("pages/register")
@@ -84,14 +84,11 @@ async function login(req, res) {
             }
         })
         if (findUser && (bcrypt.compare(password, findUser.password))) {
-            console.log("user_session: ", req.session);
             // console.log("session: ", session);
             const token_id = generateToken(findUser);
             const session = await createSession(token_id,findUser.id, 'windows');
-            res.status(200).cookie("token_id", token_id).json({
-                    success: true,
-                    token_id
-                })
+            res.status(200).cookie("token_id", token_id)
+            res.redirect("/home") 
             // const token = jwt.sign(
             //     { id: findUser.id },
             //     process.env.JWT_SECRET,
@@ -128,4 +125,10 @@ const logoutAll = async (req, res) => {
     res.redirect("/login")
 };
 
-module.exports = { register, login, registerPage, loginPage, logoutOthers, logoutAll }
+const logout = async (req, res) => {
+    res.clearCookie('token_id');
+    await deleteSessionsOne(req.user.id,req.token);
+    res.redirect("/login")
+};
+
+module.exports = { register, login, registerPage, loginPage, logoutOthers, logoutAll,logout }

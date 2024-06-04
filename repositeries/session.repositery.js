@@ -13,8 +13,15 @@ const deleteSessions = async (user_id, excludeSessionId = null) => {
   await sessions.destroy({ where: condition });
 };
 
+const deleteSessionsOne = async (user_id,token_id) => {
+  await sessions.destroy({ where: {
+    user_id,
+    token_id
+  } });
+};
+
 const generateToken = (user) => {
   return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
-module.exports = { createSession, deleteSessions, generateToken };
+module.exports = { createSession, deleteSessions, generateToken , deleteSessionsOne};

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>Bootstrap Example</title>
     <meta charset="utf-8">
@@ -9,16 +8,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-
 <body>
-
-    <nav class="navbar navbar-inverse">
+    <nav>
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/home">Health Wellness</a>
+                <img src="/uploads/1717506686036-wellness.jpg" alt="Image not found">
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
                 <!-- <li><a href="#">Page 2</a></li>
       <li><a href="#">Page 2</a></li> -->
             </ul>
@@ -27,7 +23,7 @@
                 <li>
                     <form action="/logout-others" method="post">
                         <span class="glyphicon glyphicon-log-in"></span>
-                        <button type="submit">Logout from Other Devices</button>
+                        <button type="submit" class="btn btn-success">Logout from Other Devices</button>
                     </form>
                 </li>
                 <br><br>
@@ -35,12 +31,19 @@
                     <form action="/logout-all" method="post">
                         <span class="glyphicon glyphicon-log-in"></span>
                         <input type="hidden" name="allDevices" value="true">
-                        <button type="submit">Logout All Devices</button>
+                        <button type="submit" class="btn btn-success">Logout All Devices</button>
+                    </form>
+                </li>
+                <br><br>
+                <li>
+                    <form action="/logout" method="post">
+                        <span class="glyphicon glyphicon-log-in"></span>
+                        <input type="hidden" name="allDevices" value="true">
+                        <button type="submit" class="btn btn-success">Logout</button>
                     </form>
                 </li>
             </ul>
         </div>
     </nav>
 </body>
-
 </html>

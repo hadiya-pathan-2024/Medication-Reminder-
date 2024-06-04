@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Add Medication</title>
   <meta charset="utf-8">
@@ -8,74 +9,73 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
+
 <body>
   <%- include('../partials/navbar.ejs') %>
-  <div class="container">
-  <h1>Add Medication</h1>
-  <form action="/medications" method="POST">
-    <div class="form-group">
-      <label for="name">Medicine Name:</label>
-      <input type="text" id="name" name="name" class="form-control" required>
+    <div class="container">
+      <h1>Add Medication</h1>
+      <form action="/medications" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="name">Medicine Name:</label>
+          <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <input type="text" id="description" name="description" class="form-control">
+        </div>
+        <div>
+          <label for="type">Type:</label>
+          <select id="type" name="type">
+            <option value="one-time">One-Time</option>
+            <option value="recurring">Recurring</option>
+          </select>
+        </div>
+        <br>
+        <div id="one-time-schedule">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date">
+          <label for="time">Time:</label>
+          <input type="time" id="time" name="time">
+        </div>
+        <div id="recurring-schedule" style="display: none;">
+          <div>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate">
+          </div>
+          <div>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate">
+          </div>
+          <div>
+            <label for="frequency">Frequency:</label>
+            <select id="frequency" name="frequency">
+              <option value="Daily">Daily</option>
+              <option value="Weekly">Weekly</option>
+            </select>
+          </div>
+          <div id="dayOfWeek" style="display: none;">
+            <label for="dayOfWeekSelect">Day of the Week:</label>
+            <select id="dayOfWeekSelect" name="dayOfWeek">
+              <option value="Sunday">Sunday</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+            </select>
+          </div>
+          <div>
+            <label for="time">Time:</label>
+            <input type="time" id="recurringTime" name="time">
+          </div>
+        </div>
+          <input type="file" name="profileImage">
+        <br>
+        <button type="submit" class="btn btn-success" style="color: black;">Add Medication</button>
+      </form>
     </div>
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <input type="text" id="description" name="description" class="form-control">
-    </div>
-    <div>
-      <label for="type">Type:</label>
-      <select id="type" name="type">
-        <option value="one-time">One-Time</option>
-        <option value="recurring">Recurring</option>
-      </select>
-    </div>
-    <br>
-    <div id="one-time-schedule">
-      <label for="date">Date:</label>
-      <input type="date" id="date" name="date">
-      <label for="time">Time:</label>
-      <input type="time" id="time" name="time">
-    </div>
-    <div id="recurring-schedule" style="display: none;">
-      <div>
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate">
-      </div>
-      <div>
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate">
-      </div>
-      <div>
-        <label for="frequency">Frequency:</label>
-        <select id="frequency" name="frequency">
-          <option value="Daily">Daily</option>
-          <option value="Weekly">Weekly</option>
-        </select>
-      </div>
-      <div id="dayOfWeek" style="display: none;">
-        <label for="dayOfWeekSelect">Day of the Week:</label>
-        <select id="dayOfWeekSelect" name="dayOfWeek">
-          <option value="Sunday">Sunday</option>
-          <option value="Monday">Monday</option>
-          <option value="Tuesday">Tuesday</option>
-          <option value="Wednesday">Wednesday</option>
-          <option value="Thursday">Thursday</option>
-          <option value="Friday">Friday</option>
-          <option value="Saturday">Saturday</option>
-        </select>
-      </div>
-      <div>
-        <label for="time">Time:</label>
-        <input type="time" id="recurringTime" name="time">
-      </div>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-success" style="color: black;">Add Medication</button>
-  </form>
-</div>
-<form action="/uploads" method="post" enctype="multipart/form-data">
-  <input type="file" name="profileImage">
-  <button type="submit">Upload</button>
-</form>
-  <script src="/js/home.js"></script>
+    <script src="/js/home.js"></script>
 </body>
+
 </html>
