@@ -6,7 +6,7 @@ const { generalResponse } = require('../helpers/response.helper');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const { createSession, deleteSessions, generateToken } = require('../controllers/session.controller')
+const { createSession, deleteSessions, generateToken } = require('../repositeries/session.repositery')
 
 async function registerPage(req, res) {
     res.render("pages/register")

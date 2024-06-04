@@ -1,15 +1,13 @@
 const db = require('../models/index');
 const { sessions,users,medications, one_time_schedule,recurring_schedules  } = db;
-
+const multer  = require('multer')
 async function home(req, res) {
-  const sessionData = await sessions.findOne({
-    attributes: ['token_id'],
-    where: {
-      token_id: req.token
-    }
-  })
-  // console.log(sessionData)
     res.render("pages/home")
+}
+
+async function fileUpload(req,res){
+  console.log("file",req.file)
+  res.send("done")
 }
 
 async function newMedication(req, res){
@@ -24,4 +22,4 @@ async function newMedication(req, res){
     res.redirect('/home');
   };
 
-module.exports = { home, newMedication }
+module.exports = { home, newMedication, fileUpload }
