@@ -10,4 +10,11 @@ const reportQueue = new Queue('reportQueue', {
       }
  });
 
-module.exports = reportQueue;
+ const scheduleQueue = new Queue('scheduleQueue', { 
+  connection: {
+      host: 'localhost',
+      port: 6379,
+    }
+});
+
+module.exports = reportQueue,scheduleQueue;

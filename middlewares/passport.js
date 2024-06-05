@@ -1,5 +1,3 @@
-// // let JwtStrategy = require("passport-jwt").Strategy;
-// // let JwtExtract = require("passport-jwt").ExtractJwt;
 const dotEnv = require("dotenv");
 dotEnv.config({ path: `.env` });
 const JwtStrategy = require('passport-jwt').Strategy;
@@ -18,7 +16,9 @@ const opts = {
 
 module.exports = (passport) => {
   try {
+    
     passport.use(new JwtStrategy(opts, async (req, jwt_payload, next) => {
+      console.log("jwt: ", jwt_payload)
       try {
         const token = cookieExtractor(req);
         req.token = token

@@ -2,9 +2,7 @@ const db = require('../models/index');
 const { users, medications, one_time_schedule } = db;
 const nodemailer = require('nodemailer');
 const { createObjectCsvWriter } = require('csv-writer');
-const path = require('path');
 const dotEnv = require("dotenv");
-const { Op } = require('sequelize');
 dotEnv.config({ path: `.env` });
 
 async function generateAndSendReport(userId) {
@@ -30,7 +28,7 @@ async function generateAndSendReport(userId) {
         ]
     });
     // console.log("Logs: ", logs[0].one_time_schedules[0].time);
-    // console.log("Logs: ", logs);
+    console.log("Logs: ", logs);
     const csvWriter = createObjectCsvWriter({
         // path: path.resolve(__dirname + `reports/${userId}.csv`),
         path: ('/home/hadiya-pathan/Downloads/1.csv'),
@@ -41,6 +39,7 @@ async function generateAndSendReport(userId) {
             { id: 'date', title: 'Date' },
         ]
     });
+    
     const records = logs.map(log => {
     return {
         medicineName: log.medicine_name,

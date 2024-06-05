@@ -35,8 +35,8 @@ app.use('/', router);
  */
 const cron = require('./helpers/cron')
 // cron.OneTimeScheduler();
-// cron.WeeklyReportScheduler();
-// require("./services/worker")
+cron.WeeklyReportScheduler();
+require("./services/worker")
 // cron.RecurringScheduler();
 
 /**
